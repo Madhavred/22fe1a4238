@@ -8,25 +8,28 @@ const STORAGE_KEY = "shortenedUrlsHistory";
 function UrlShortenerPage() {
   const [shortenedUrls, setShortenedUrls] = useState([]);
 
-  // Load history from localStorage on mount
+  // Always load history from localStorage on mount
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       try {
         setShortenedUrls(JSON.parse(stored));
       } catch (e) {
-        // Corrupted storage data fallback
         setShortenedUrls([]);
       }
     }
   }, []);
 
-  // Update localStorage whenever shortenedUrls changes
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(shortenedUrls));
-  }, [shortenedUrls]);
-
   const handleShorten = (urlData) => {
+    // Always get the current list from localStorage to prevent losing other items
+    const stored = localStorage.getItem(STORAGE_KEY);
+    let current = [];
+    if (stored) {
+      try {
+        current = JSON.parse(stored);
+      } catch {}
+    }
+
     // Generate fake short URL
     const shortcode = urlData.customCode || Math.random().toString(36).substring(7);
     const shortUrl = `https://short.ly/${shortcode}`;
@@ -40,9 +43,13 @@ function UrlShortenerPage() {
       shortUrl,
       createdAt,
       expiresAt,
+      clicks: 0,
+      clickDetails: [],
     };
 
-    setShortenedUrls([...shortenedUrls, newEntry]);
+    const updated = [...current, newEntry];
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    setShortenedUrls(updated);
   };
 
   return (
@@ -50,9 +57,7 @@ function UrlShortenerPage() {
       <UrlShortenerForm onShorten={handleShorten} />
       <Grid container spacing={2} sx={{ mt: 2 }}>
         {shortenedUrls.length === 0 && (
-          <Grid item xs={12}>
-            No URLs have been shortened yet.
-          </Grid>
+          <Grid item xs={12}>No URLs have been shortened yet.</Grid>
         )}
         {shortenedUrls.slice().reverse().map((data, index) => (
           <Grid item xs={12} md={6} key={index}>
