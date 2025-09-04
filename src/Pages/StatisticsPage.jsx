@@ -6,12 +6,10 @@ const STORAGE_KEY = "shortenedUrlsHistory";
 function StatisticsPage() {
   const [stats, setStats] = useState([]);
 
-  // Helper to load current data from localStorage
   const loadStats = () => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       try {
-        // Add default clicks/clickDetails if missing
         const parsed = JSON.parse(stored).map(x => ({
           ...x,
           clicks: x.clicks ?? 0,
@@ -27,7 +25,6 @@ function StatisticsPage() {
   };
 
   useEffect(() => {
-    // On mount, and whenever the page/document is visible again - always load from localStorage
     loadStats();
     const handleVisibility = () => {
       if (document.visibilityState === "visible") {

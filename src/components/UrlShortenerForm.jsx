@@ -4,7 +4,7 @@ import { TextField, Button, Box } from "@mui/material";
 function UrlShortenerForm({ onShorten }) {
   const [url, setUrl] = useState("");
   const [customCode, setCustomCode] = useState("");
-  const [validity, setValidity] = useState(""); // In minutes
+  const [validity, setValidity] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();

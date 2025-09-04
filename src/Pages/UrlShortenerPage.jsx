@@ -8,7 +8,6 @@ const STORAGE_KEY = "shortenedUrlsHistory";
 function UrlShortenerPage() {
   const [shortenedUrls, setShortenedUrls] = useState([]);
 
-  // Always load history from localStorage on mount
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
@@ -21,7 +20,6 @@ function UrlShortenerPage() {
   }, []);
 
   const handleShorten = (urlData) => {
-    // Always get the current list from localStorage to prevent losing other items
     const stored = localStorage.getItem(STORAGE_KEY);
     let current = [];
     if (stored) {
@@ -30,7 +28,6 @@ function UrlShortenerPage() {
       } catch {}
     }
 
-    // Generate fake short URL
     const shortcode = urlData.customCode || Math.random().toString(36).substring(7);
     const shortUrl = `https://short.ly/${shortcode}`;
     const createdAt = new Date().toLocaleString();
